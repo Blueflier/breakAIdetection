@@ -1,0 +1,54 @@
+// changeColor() Created by PE Adam
+// 01-19-2022
+// Replace underscores with either a space or a randomly chosen white character.
+// Google Help Forum
+// https://support.google.com/docs/thread/146549265
+
+// changeColor() modified by Blueflier
+// 08-26-24
+// Replaces occurrences of a specified word/char in a Google Document with either a space or a random character from a predefined set, setting the color of the replacement text to white.
+
+function changeColor() {
+  const doc = DocumentApp.getActiveDocument();
+  var body = doc.getBody();
+  
+  //------------------------ Change these variables --------------------------
+  // Change the HEXCODE to the color you would like for the font color.
+  var color = '#FFFFFF';
+  // Change the word in single quotes to the word you want to change in the document.
+  var search = '_';
+  // Characters to replace the search text
+  var replacementChars = ['@', '#', '$', '%', '&'];
+  //------------------ End of variables that need changing --------------------
+  
+  var text = body.editAsText();
+  var index = -1;
+  
+  while (true) {
+    index = text.getText().indexOf(search, index + 1);
+    
+    if (index == -1) {
+      break;
+    } else {
+      // Generate a random number between 0 and 1
+      var randomChance = Math.random();
+      
+      // 50% chance to either replace with a space or a white replacement character
+      if (randomChance <= 0.5) {
+        // Replace the search text with a space
+        text.deleteText(index, index + search.length - 1);
+        text.insertText(index, ' ');
+      } else {
+        // Choose a random character from the replacementChars array
+        var randomIndex = Math.floor(Math.random() * replacementChars.length);
+        var replacementChar = replacementChars[randomIndex];
+        
+        // Replace the search text with the chosen character
+        text.deleteText(index, index + search.length - 1);
+        text.insertText(index, replacementChar);
+        
+        // Set the color of the new character to white
+        text.setForegroundColor(index, index, color);
+      }
+    }
+  }
